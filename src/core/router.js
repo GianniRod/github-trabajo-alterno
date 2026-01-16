@@ -70,3 +70,4 @@ export const initRouter = (handlers) => {
     // Manejar ruta inicial
     handleRoute(window.location.pathname);
 };
+
