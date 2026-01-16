@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RealFutbol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="https://i.postimg.cc/vBgSB9tn/favicon.jpg" type="image/jpg">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Inter:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2312798559341043"
+        crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg-main: #000000;
+            --bg-card: #0f0f0f;
+            --border: #333333;
+            --text-main: #ffffff;
+            --text-muted: #888888;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Tipografía Deportiva */
+        .font-sport {
+            font-family: 'Chakra Petch', sans-serif;
+        }
+
+        /* Tarjetas Minimalistas B&W */
+        .match-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: all 0.2s ease;
+        }
+
+        /* Hover efecto blanco */
+        .match-card.clickable:hover {
+            border-color: #ffffff;
+            background-color: #1a1a1a;
+            cursor: pointer;
+        }
+
+        .match-card.not-clickable {
+            opacity: 1;
+            cursor: default;
+        }
+
+        /* Scrollbars */
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 2px;
+        }
+
+        /* Toggle Switch B&W & Red Live */
+        .toggle-checkbox:checked {
+            transform: translateX(20px);
+            border-color: #ef4444;
+            background-color: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #fff;
+        }
+
+        .toggle-label {
+            background-color: #000;
+            border: 1px solid #444;
+        }
+
+        /* Cancha Táctica B&W */
+        .football-pitch {
+            background-color: #151515;
+            /* Gris muy oscuro */
+            border: 2px solid #444;
+            position: relative;
+            width: 100%;
+            aspect-ratio: 7 / 5;
+            border-radius: 0 !important;
+            overflow: hidden;
+        }
+
+        .pitch-line {
+            position: absolute;
+            background-color: #444;
+        }
+
+        .center-line {
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 1px;
+            transform: translateX(-50%);
+        }
+
+        .center-circle {
+            top: 50%;
+            left: 50%;
+            width: 20%;
+            height: 28%;
+            border: 1px solid #444;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .penalty-box {
+            position: absolute;
+            border: 1px solid #444;
+            width: 15%;
+            height: 40%;
+            top: 30%;
+        }
+
+        .home-box {
+            left: 0;
+            border-left: none;
+        }
+
+        .away-box {
+            right: 0;
+            border-right: none;
+        }
+
+        /* Corner Arcs */
+        .corner-arc {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border: 1px solid #444;
+            border-radius: 50%;
+        }
+
+        .corner-top-left {
+            top: -25px;
+            left: -25px;
+        }
+
+        .corner-top-right {
+            top: -25px;
+            right: -25px;
+        }
+
+        .corner-bottom-left {
+            bottom: -25px;
+            left: -25px;
+        }
+
+        .corner-bottom-right {
+            bottom: -25px;
+            right: -25px;
+        }
+
+        /* Marcadores Jugadores B&W */
+        .player-marker {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 10px;
+            z-index: 10;
+            transition: transform 0.2s;
+            cursor: pointer;
+            border: 1px solid #000;
+        }
+
+        .home-player {
+            background-color: #ffffff;
+            color: #000000;
+        }
+
+        .away-player {
+            background-color: #333333;
+            color: #ffffff;
+            border: 1px solid #fff;
+        }
+
+        .player-marker:active {
+            transform: scale(1.3);
+            z-index: 20;
+        }
+
+        /* Tabs */
+        .tab-btn {
+            color: #666;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab-btn.active {
+            color: #fff;
+            border-bottom-color: #fff;
+        }
+
+        /* Loader B&W */
+        .loader {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #333;
+            border-bottom-color: #fff;
+            border-radius: 50%;
+            display: inline-block;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Botón Flotante Fijo */
+        .btn-float-back {
+            position: fixed;
+            top: 16px;
+            left: 16px;
+            z-index: 100;
+            background: #000;
+            border: 1px solid #444;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-float-back:hover {
+            background-color: #222;
+            border-color: #fff;
+        }
+
+        .font-tnum {
+            font-feature-settings: "tnum";
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* Live Pulse Blanco */
+        .live-dot {
+            height: 6px;
+            width: 6px;
+            background-color: #fff;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+            vertical-align: middle;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+
+            100% {
+                opacity: 0.4;
+                transform: scale(0.8);
+            }
+        }
+
+        /* Override Select */
+        select {
+            background-color: #000;
+            color: white;
+            border-color: #333;
+        }
+
+        /* Botón Principal Blanco */
+        .btn-primary {
+            background-color: #ffffff;
+            color: #000000;
+            font-weight: bold;
+            border: 1px solid #fff;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #ccc;
+            border-color: #ccc;
+        }
+
+        /* Backdrop Móvil */
+        .mobile-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 40;
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- HEADER SIMÉTRICO -->
+    <header
+        class="h-12 lg:h-16 border-b border-[#222] bg-black flex items-center justify-between px-4 z-40 shrink-0 relative">
+        <!-- Izquierda: Logo -->
+        <div class="flex items-center cursor-pointer" onclick="window.location.reload()">
+            <img src="https://i.postimg.cc/9FD6NhN2/REAL-FUTBOL-LARGO.png" alt="Real Futbol Logo"
+                class="h-8 lg:h-12 object-contain">
+        </div>
+
+        <!-- Derecha: Toggle -->
+        <div class="flex items-center justify-end gap-3 min-w-[60px]">
+            <div class="flex flex-col items-end leading-none">
+                <span class="text-[10px] font-bold text-white uppercase tracking-widest mr-1">EN VIVO</span>
+                <span id="live-count" class="text-[9px] font-mono text-red-500 font-bold mr-1 hidden">(0)</span>
+            </div>
+            <div class="relative inline-block w-10 h-5 align-middle select-none">
+                <input type="checkbox" id="live-toggle" onchange="app.toggleLiveFilter()"
+                    class="toggle-checkbox absolute block w-3 h-3 mt-1 ml-1 rounded-full bg-white border-none appearance-none cursor-pointer transition-all duration-300 left-0" />
+                <label for="live-toggle"
+                    class="toggle-label block overflow-hidden h-5 rounded-full bg-[#222] cursor-pointer border border-[#444]"></label>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden relative">
+
+        <div id="mobile-backdrop" class="mobile-backdrop hidden lg:hidden"></div>
+
+        <!-- Sidebar B&W -->
+        <aside id="sidebar"
+            class="fixed inset-y-0 left-0 w-full lg:w-72 bg-black border-r border-[#222] flex flex-col transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-300 z-40 h-[calc(100%-48px)] lg:h-full top-12 lg:top-0">
+
+            <div class="overflow-y-auto flex-1 p-3 space-y-1 pb-24">
+                <div class="px-3 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest">Competiciones</div>
+
+                <!-- Botones de Ligas (IDs Correctos API-Sports) -->
+                <button onclick="app.showStandings(128, 'Liga Profesional'); app.openMobileTab('results')"
+                    class="league-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[#1a1a1a] hover:text-white transition-all">
+                    <img src="https://media.api-sports.io/football/leagues/128.png" class="w-5 h-5 object-contain">
+                    <span class="text-sm font-bold">Liga Argentina</span>
+                </button>
+
+                <button onclick="app.showStandings(1032, 'Copa de la Liga'); app.openMobileTab('results')"
+                    class="league-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[#1a1a1a] hover:text-white transition-all">
+                    <img src="https://media.api-sports.io/football/leagues/1032.png" class="w-5 h-5 object-contain">
+                    <span class="text-sm font-bold">Copa de la Liga</span>
+                </button>
+
+                <button onclick="app.showStandings(129, 'Primera Nacional'); app.openMobileTab('results')"
+                    class="league-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[#1a1a1a] hover:text-white transition-all">
+                    <img src="https://media.api-sports.io/football/leagues/129.png" class="w-5 h-5 object-contain">
+                    <span class="text-sm font-bold">Primera Nacional</span>
+                </button>
+
+                <button onclick="app.showStandings(71, 'Brasileirão'); app.openMobileTab('results')"
+                    class="league-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[#1a1a1a] hover:text-white transition-all">
+                    <img src="https://media.api-sports.io/football/leagues/71.png" class="w-5 h-5 object-contain">
+                    <span class="text-sm font-bold">Brasileirão A</span>
+                </button>
+
+                <div class="my-2 border-t border-[#222]"></div>
+
+                <button onclick="app.showStandings(39, 'Premier League'); app.openMobileTab('results')"
+                    class="league-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[#1a1a1a] hover:text-white transition-all">
+                    <img src="https://media.api-sports.io/football/leagues/39.png" class="w-5 h-5 object-contain">
+                    <span class="text-sm font-bold">Premier League</span>
+                </button>
+
+                <button onclick="app.showStandings(140, 'La Liga'); app.openMobileTab('results')"
+                    class="league-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[#1a1a1a] hover:text-white transition-all">
+                    <img src="https://media.api-sports.io/football/leagues/140.png" class="w-5 h-5 object-contain">
+                    <span class="text-sm font-bold">La Liga</span>
+                </button>
+
+                <button onclick="app.showStandings(78, 'Bundesliga'); app.openMobileTab('results')"
+                    class="league-item w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left text-gray-300 hover:bg-[#1a1a1a] hover:text-white transition-all">
+                    <img src="https://media.api-sports.io/football/leagues/78.png" class="w-5 h-5 object-contain">
+                    <span class="text-sm font-bold">Bundesliga</span>
+                </button>
+
+                <div class="mt-8 px-2 space-y-3 hidden lg:block">
+                    <button onclick="app.navigateToForum()"
+                        class="w-full btn-primary py-3 px-4 text-xs uppercase tracking-widest shadow-lg flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        Foro Global
+                    </button>
+                    <button onclick="document.getElementById('donation-modal').classList.remove('hidden')"
+                        class="w-full btn-primary py-3 px-4 text-xs uppercase tracking-widest shadow-lg border-t-0 bg-yellow-500 border-yellow-500 text-black hover:bg-yellow-400 hover:border-yellow-400 font-bold flex items-center justify-center gap-2 mt-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+                            <path d="M12 18V6"></path>
+                        </svg>
+                        Donar
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col relative w-full lg:w-auto overflow-hidden bg-black">
+
+            <!-- Date Navigation -->
+            <div id="date-nav" class="border-b border-[#222] p-3 z-10 sticky top-0 bg-black/95 backdrop-blur">
+                <div class="flex items-center justify-center gap-6 mb-3 max-w-lg mx-auto">
+                    <button onclick="app.changeDate(-1)"
+                        class="p-2 text-gray-400 hover:text-white hover:bg-[#222] rounded transition-colors"><svg
+                            xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                        </svg></button>
+                    <div class="text-center cursor-pointer" onclick="app.resetDate()">
+                        <h2 id="current-month"
+                            class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-0.5">MES</h2>
+                        <div id="current-day-text" class="text-lg font-bold text-white leading-none font-sport">HOY
+                        </div>
+                    </div>
+                    <button onclick="app.changeDate(1)"
+                        class="p-2 text-gray-400 hover:text-white hover:bg-[#222] rounded transition-colors"><svg
+                            xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                        </svg></button>
+                </div>
+                <div id="calendar-days" class="flex justify-between max-w-lg mx-auto gap-1"></div>
+            </div>
+
+            <div id="main-content" class="flex-1 overflow-y-auto p-4 relative scroll-smooth">
+
+                <!-- Match List -->
+                <div id="view-match-list" class="max-w-3xl mx-auto space-y-6 animate-fade-in pb-24"></div>
+
+                <!-- Standings View -->
+                <div id="view-standings" class="hidden max-w-4xl mx-auto animate-fade-in pb-24">
+                    <div
+                        class="flex flex-col gap-4 mb-6 sticky top-0 z-20 bg-black/95 backdrop-blur py-2 border-b border-[#222]">
+                        <div class="flex items-center justify-between px-1">
+                            <div class="flex items-center gap-3">
+                                <button onclick="app.navigateToMatches()" class="lg:hidden p-1 text-white"><svg
+                                        xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                                    </svg></button>
+                                <h2 id="standings-title"
+                                    class="text-xl font-bold text-white uppercase tracking-wider font-sport">Tabla</h2>
+                            </div>
+                            <select id="season-selector" onchange="app.changeSeason(this.value)"
+                                class="bg-[#111] text-white text-sm border border-[#333] p-1 px-2 rounded focus:outline-none font-mono">
+                                <option value="2025">2025</option>
+                                <option value="2024" selected>2024</option>
+                                <option value="2023">2023</option>
+                            </select>
+                        </div>
+                        <!-- Tabs Zonas -->
+                        <div id="standings-tabs" class="flex overflow-x-auto gap-2 px-1 no-scrollbar hidden"></div>
+                    </div>
+
+                    <div id="standings-container" class="space-y-6"></div>
+                </div>
+
+                <!-- Forum View -->
+                <div id="view-forum" class="hidden max-w-4xl mx-auto animate-fade-in pb-24 h-full flex flex-col">
+                    <div
+                        class="flex items-center gap-3 mb-6 sticky top-0 z-20 bg-black/95 backdrop-blur py-2 border-b border-[#222]">
+                        <button onclick="app.navigateToMatches()" class="lg:hidden p-1 text-white"><svg
+                                xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg></button>
+                        <h2 class="text-xl font-bold text-white uppercase tracking-wider font-sport">Foro Global</h2>
+                    </div>
+
+                    <div id="forum-messages" class="flex-1 overflow-y-auto space-y-4 pr-1 mb-4 min-h-[300px]">
+                        <!-- Messages inserted here -->
+                        <div class="text-center text-gray-600 py-10 text-xs uppercase tracking-widest">Cargando
+                            mensajes...</div>
+                    </div>
+
+                    <div class="bg-[#111] p-4 border border-[#222] rounded-lg sticky bottom-0 z-10 w-full">
+                        <div class="flex flex-col gap-3">
+                            <input type="text" id="forum-username" placeholder="Tu Nombre / Usuario"
+                                class="bg-[#0a0a0a] border border-[#333] text-white text-xs p-3 rounded focus:outline-none focus:border-white font-mono"
+                                maxlength="20">
+                            <div class="flex gap-2">
+                                <input type="text" id="forum-input" placeholder="Escribe un mensaje..."
+                                    class="flex-1 bg-[#0a0a0a] border border-[#333] text-white text-sm p-3 rounded focus:outline-none focus:border-white">
+                                <button onclick="app.sendMessage('forum-username', 'forum-input')"
+                                    class="btn-primary px-6 py-2 rounded text-xs uppercase font-bold tracking-widest hover:bg-gray-200 transition-colors">
+                                    Enviar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Match Detail Overlay -->
+                <div id="view-match-detail"
+                    class="hidden fixed inset-0 bg-black z-[60] overflow-y-auto animate-fade-in">
+                    <div class="max-w-4xl mx-auto min-h-full bg-[#050505] relative">
+
+                        <!-- Botón Volver Flotante -->
+                        <button onclick="app.closeDetail()" class="btn-float-back hover:bg-[#222] transition-all">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                        </button>
+
+                        <div id="detail-loader" class="hidden py-40 text-center">
+                            <div class="loader"></div>
+                        </div>
+
+                        <div id="detail-content-wrapper" class="pt-16 pb-20">
+                            <!-- Scoreboard -->
+                            <div class="relative p-6 text-center border-b border-[#222] bg-[#0a0a0a]">
+                                <div class="flex justify-between items-center max-w-md mx-auto">
+                                    <div class="flex-1 flex flex-col items-center min-w-0">
+                                        <img id="detail-home-logo" src="" class="w-16 h-16 object-contain mb-3">
+                                        <h3 id="detail-home-name"
+                                            class="font-bold text-sm leading-tight text-white uppercase text-center w-full truncate">
+                                            Home</h3>
+                                        <div id="detail-home-scorers-list"
+                                            class="mt-2 text-xs text-gray-500 font-mono space-y-0.5 flex flex-col items-center w-full">
+                                        </div>
+                                    </div>
+                                    <div class="px-4 flex flex-col items-center">
+                                        <div
+                                            class="text-4xl font-black text-white tracking-tighter flex items-center gap-2 score-font">
+                                            <span id="detail-home-score">-</span>
+                                            <span class="text-gray-600 text-2xl">:</span>
+                                            <span id="detail-away-score">-</span>
+                                        </div>
+                                        <div id="detail-status"
+                                            class="mt-2 text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                                            VS</div>
+                                    </div>
+                                    <div class="flex-1 flex flex-col items-center min-w-0">
+                                        <img id="detail-away-logo" src="" class="w-16 h-16 object-contain mb-3">
+                                        <h3 id="detail-away-name"
+                                            class="font-bold text-sm leading-tight text-white uppercase text-center w-full truncate">
+                                            Away</h3>
+                                        <div id="detail-away-scorers-list"
+                                            class="mt-2 text-xs text-gray-500 font-mono space-y-0.5 flex flex-col items-center w-full">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tabs -->
+                            <div
+                                class="flex border-b border-[#222] sticky top-[57px] bg-black/95 backdrop-blur z-30 overflow-x-auto no-scrollbar">
+                                <button
+                                    class="flex-1 py-3 px-4 text-xs font-bold text-white border-b-2 border-white tab-btn whitespace-nowrap uppercase"
+                                    data-target="tab-timeline"
+                                    onclick="app.switchTab(this, 'tab-timeline')">Cronología</button>
+                                <button
+                                    class="flex-1 py-3 px-4 text-xs font-bold text-gray-500 hover:text-gray-300 tab-btn whitespace-nowrap uppercase"
+                                    data-target="tab-lineups"
+                                    onclick="app.switchTab(this, 'tab-lineups')">Alineaciones</button>
+                                <button
+                                    class="flex-1 py-3 px-4 text-xs font-bold text-gray-500 hover:text-gray-300 tab-btn whitespace-nowrap uppercase"
+                                    data-target="tab-stats"
+                                    onclick="app.switchTab(this, 'tab-stats')">Estadísticas</button>
+                                <button
+                                    class="flex-1 py-3 px-4 text-xs font-bold text-gray-500 hover:text-gray-300 tab-btn whitespace-nowrap uppercase"
+                                    data-target="tab-forum" onclick="app.switchTab(this, 'tab-forum')">Foro</button>
+                            </div>
+
+                            <div class="p-4 lg:p-8 space-y-6 min-h-[50vh]">
+                                <div id="tab-timeline" class="tab-content block space-y-4 max-w-2xl mx-auto"></div>
+
+                                <div id="tab-forum"
+                                    class="tab-content hidden h-[400px] flex flex-col max-w-2xl mx-auto">
+                                    <div id="match-forum-messages"
+                                        class="flex-1 overflow-y-auto space-y-3 pr-1 mb-4 border border-[#222] rounded p-3 bg-[#0a0a0a]">
+                                        <div class="text-center text-gray-600 py-10 text-xs uppercase tracking-widest">
+                                            Cargando charla del partido...</div>
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <input type="text" id="match-forum-username" placeholder="Tu Nombre"
+                                            class="bg-[#111] border border-[#333] text-white text-xs p-2 rounded focus:outline-none focus:border-white font-mono"
+                                            maxlength="20">
+                                        <div class="flex gap-2">
+                                            <input type="text" id="match-forum-input"
+                                                placeholder="Comenta sobre el partido..."
+                                                class="flex-1 bg-[#111] border border-[#333] text-white text-sm p-2 rounded focus:outline-none focus:border-white">
+                                            <button
+                                                onclick="app.sendMessage('match-forum-username', 'match-forum-input')"
+                                                class="btn-primary px-4 py-2 rounded text-xs uppercase font-bold tracking-widest hover:bg-gray-200 transition-colors">
+                                                Enviar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="tab-lineups" class="tab-content hidden max-w-2xl mx-auto">
+                                    <div class="football-pitch mx-auto" id="football-pitch">
+                                        <div class="center-line"></div>
+                                        <div class="center-circle"></div>
+                                        <div class="penalty-box home-box"></div>
+                                        <div class="penalty-box away-box"></div>
+                                        <!-- Corner Arcs -->
+                                        <div class="corner-arc corner-top-left"></div>
+                                        <div class="corner-arc corner-top-right"></div>
+                                        <div class="corner-arc corner-bottom-left"></div>
+                                        <div class="corner-arc corner-bottom-right"></div>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-4 mt-6">
+                                        <div class="bg-[#111] p-4 rounded border border-[#222]">
+                                            <h4
+                                                class="text-white font-bold border-b border-[#333] pb-2 mb-2 text-xs uppercase tracking-wider">
+                                                Local</h4>
+                                            <div id="lineup-home-list"
+                                                class="space-y-2 text-xs text-gray-400 font-mono"></div>
+                                        </div>
+                                        <div class="bg-[#111] p-4 rounded border border-[#222]">
+                                            <h4
+                                                class="text-white font-bold border-b border-[#333] pb-2 mb-2 text-right text-xs uppercase tracking-wider">
+                                                Visitante</h4>
+                                            <div id="lineup-away-list"
+                                                class="space-y-2 text-xs text-gray-400 text-right font-mono"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="tab-stats" class="tab-content hidden space-y-4 max-w-xl mx-auto"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Player Modal -->
+    <div id="player-modal"
+        class="fixed inset-0 bg-black/90 z-[70] hidden flex items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-[#111] border border-[#333] rounded-none w-full max-w-sm overflow-hidden shadow-2xl">
+            <div class="bg-black p-5 flex justify-between items-center border-b border-[#222]">
+                <h3 id="modal-player-name" class="font-bold text-white text-lg font-mono uppercase">Jugador</h3>
+                <button onclick="document.getElementById('player-modal').classList.add('hidden')"
+                    class="text-white hover:text-gray-300"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg></button>
+            </div>
+            <div class="p-8 text-center">
+                <div
+                    class="w-16 h-16 bg-white rounded-full mx-auto mb-4 flex items-center justify-center text-black font-bold text-2xl">
+                    #</div>
+                <p class="text-gray-400 text-sm uppercase tracking-wider">Detalles no disponibles</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation (Mobile Only) -->
+    <nav
+        class="fixed bottom-0 left-0 w-full bg-black border-t border-[#222] z-50 lg:hidden flex justify-around items-center h-16 pb-safe">
+        <button id="btn-nav-results" onclick="app.navigateToMatches()"
+            class="flex flex-col items-center justify-center w-full h-full text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest">Resultados</span>
+        </button>
+        <button id="btn-nav-leagues" onclick="app.openMobileTab('leagues')"
+            class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-white active:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest">Ligas</span>
+        </button>
+        <button id="btn-nav-forum" onclick="app.navigateToForum()"
+            class="flex flex-col items-center justify-center w-full h-full text-gray-400 hover:text-white active:text-white transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest">Foro</span>
+        </button>
+        <button onclick="document.getElementById('donation-modal').classList.remove('hidden')"
+            class="flex flex-col items-center justify-center w-full h-full text-yellow-500 hover:text-yellow-400 active:text-yellow-600 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 mb-1" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <span class="text-[10px] font-bold uppercase tracking-widest">Donar</span>
+        </button>
+    </nav>
+
+    <!-- Donation Modal -->
+    <div id="donation-modal"
+        class="fixed inset-0 bg-black/90 z-[80] hidden flex items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-[#111] border border-[#333] rounded-lg w-full max-w-sm overflow-hidden shadow-2xl">
+            <div class="bg-black p-5 flex justify-between items-center border-b border-[#222]">
+                <h3 class="font-bold text-white text-lg font-sport uppercase text-yellow-500">Apoyar el proyecto</h3>
+                <button onclick="document.getElementById('donation-modal').classList.add('hidden')"
+                    class="text-white hover:text-gray-300"><svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg></button>
+            </div>
+            <div class="p-6 space-y-4">
+                <p class="text-gray-400 text-xs text-center mb-4 leading-relaxed">Tu aporte nos ayuda a mantener los
+                    servidores y mejorar la aplicación cada día.</p>
+
+                <a href="https://mpago.la/2K2nHrX" target="_blank"
+                    class="block w-full btn-primary py-3 px-4 text-center text-sm font-bold uppercase tracking-widest hover:bg-yellow-500 hover:text-black transition-colors border border-[#333] bg-[#0a0a0a] text-white">
+                    Donar $1.000
+                </a>
+                <a href="https://mpago.la/2K2nHrX" target="_blank"
+                    class="block w-full btn-primary py-3 px-4 text-center text-sm font-bold uppercase tracking-widest hover:bg-yellow-500 hover:text-black transition-colors border border-[#333] bg-[#0a0a0a] text-white">
+                    Donar $2.500
+                </a>
+                <a href="https://mpago.la/31xAk5T" target="_blank"
+                    class="block w-full btn-primary py-3 px-4 text-center text-sm font-bold uppercase tracking-widest hover:bg-yellow-500 hover:text-black transition-colors border border-[#333] bg-[#0a0a0a] text-white">
+                    Donar $5.000
+                </a>
+                <a href="https://mpago.la/28LhXrY" target="_blank"
+                    class="block w-full btn-primary py-3 px-4 text-center text-sm font-bold uppercase tracking-widest hover:bg-yellow-500 hover:text-black transition-colors border border-[#333] bg-[#0a0a0a] text-white">
+                    Donar $10.000
+                </a>
+
+                <div class="pt-4 flex justify-center">
+                    <span class="text-[10px] text-gray-600 font-mono"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>

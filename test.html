@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test - RealFutbol Modules</title>
+</head>
+
+<body>
+    <h1>Testing Module Loading</h1>
+    <div id="status">Loading...</div>
+
+    <script type="module">
+        console.log('=== MODULE TEST START ===');
+
+        try {
+            console.log('1. Testing firebase import...');
+            const firebase = await import('./src/core/firebase.js');
+            console.log('✅ Firebase loaded:', firebase);
+
+            console.log('2. Testing api import...');
+            const api = await import('./src/core/api.js');
+            console.log('✅ API loaded:', api);
+
+            console.log('3. Testing dom import...');
+            const dom = await import('./src/core/dom.js');
+            console.log('✅ DOM loaded:', dom);
+
+            console.log('4. Testing router import...');
+            const router = await import('./src/core/router.js');
+            console.log('✅ Router loaded:', router);
+
+            console.log('5. Testing matches import...');
+            const matches = await import('./src/views/matches.js');
+            console.log('✅ Matches loaded:', matches);
+
+            console.log('6. Testing main import...');
+            const main = await import('./src/main.js');
+            console.log('✅ Main loaded:', main);
+
+            console.log('7. Checking window.app...');
+            console.log('window.app:', window.app);
+
+            document.getElementById('status').innerHTML = '<span style="color: green;">✅ All modules loaded successfully!</span><br>Check console for details.';
+
+            console.log('=== MODULE TEST SUCCESS ===');
+        } catch (error) {
+            console.error('❌ MODULE LOAD ERROR:', error);
+            document.getElementById('status').innerHTML = '<span style="color: red;">❌ Error loading modules</span><br>' + error.message + '<br>Check console for details.';
+        }
+    </script>
+</body>
+
+</html>
